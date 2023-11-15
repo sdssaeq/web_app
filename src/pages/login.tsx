@@ -8,17 +8,19 @@ function LoginPage() {
       <h1>Login</h1>
       
       <div className="card">
-      <div className="input-container">
+        <form action="">
+        <div className="input-container">
         <img src={account} width={"30px"} height={"30px"}/>
-        <input className="input-box" name="username" placeholder="Email/Username"/>
+        <input className="input-box" name="username" placeholder="Username"/>
       </div>
       <div className="input-container">
       <img src={key} width={"30px"} height={"30px"}/>
         <input className="input-box" name="password" placeholder="Password"/>
       </div>
+      <button type="submit">Login</button>
+      </form>
       </div>
-     
-      <button>Login</button>
+      
       <p className="grey">
       Dont Have Account yet? <Link to="/register" style={{color: 'white'}}>Register</Link>
       </p>
