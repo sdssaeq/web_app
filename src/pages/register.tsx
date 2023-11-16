@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import account from "/account.svg";
 import key from "/key.svg";
-import { useState, ChangeEvent, FormEvent} from "react";
-import { ToastContainer, toast } from 'react-toastify';
+import { useState} from "react";
 import 'react-toastify/dist/ReactToastify.css';
+import useTogglePassword from '../components/useTogglePassword';
+import eye_close from "/eye_close.svg";
+import eye_open from "/eye_open.svg";
+import {notify_failed,ToastContainer} from "../components/toast-notify"
 
 interface FormData {
   username: string;
@@ -11,44 +14,23 @@ interface FormData {
 }
 
 function RegisterPage() {
-
-  const notify_sucess = (message : string) => toast.success(message, {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-    });
-
-    const notify_failed = (message : string) => toast.error(message, {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      });
-
+  const navigates = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //Password Toggle Hide Button
+  const { showPassword, handleTogglePassword} = useTogglePassword();
+  
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:3000/register", {
+      const response = await fetch("https://api-satrio-efb719eaf55c.herokuapp.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +40,7 @@ function RegisterPage() {
 
       if (response.ok) {
         //console.log("User registered successfully");
-        notify_sucess("User registered successfully");
+        navigates(`/login?registrationSuccess=true`);
       } else {
         // Registration failed, handle the error
         const responseData = await response.json();
@@ -80,7 +62,15 @@ function RegisterPage() {
         </div>
         <div className="input-container">
          <img src={key} width={"30px"} height={"30px"}/>
-         <input className="input-box" name="password" placeholder="Password" value={formData.password} onChange={handleInputChange}/>
+         <input className="input-box" type={showPassword ? 'text' : 'password'} name="password" placeholder="Password" value={formData.password} onChange={handleInputChange}/>
+    <button
+      type="button"
+      className="toggle-password-button"
+      onClick={handleTogglePassword}
+      style={{ visibility: 'hidden', border: 'none', padding: 0 }}>
+      {showPassword ? (<img src={eye_close} alt="Eye Close" width="12px" height="12px" style={{ visibility: "visible" }}/>) : (
+    <img src={eye_open} alt="Eye Open" width="12px" height="12px" style={{ visibility: "visible"}} />)}
+    </button>
         </div>
         <button type="submit">Register</button>
         <ToastContainer/>

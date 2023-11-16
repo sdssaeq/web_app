@@ -31,8 +31,6 @@
   border-radius: 8px;
 }
 
-
-
 .input-container {
   display: flex;
   align-items: center;
@@ -52,7 +50,16 @@
 .input-container img {
   margin-right: 10px;
 }
-
+.input-container button {
+  position: absolute;
+  border-radius: 100px;
+  height: 50px;
+  width: 50px;
+  transform: translateY(-20%) translateX(600%);
+}
+.input-container button:focus {
+  border-color: #2f2f2f;
+}
 .grey {
   color: #888;
 }
