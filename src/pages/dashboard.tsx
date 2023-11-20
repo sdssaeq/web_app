@@ -2,8 +2,9 @@ import { useEffect, useRef } from "react";
 import { notify_success, ToastContainer } from "../components/toast-notify";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-
+import { useAuth } from "../components/auth-contex";
 function Dashboard() {
+  const { username, password } = useAuth();
   const navigates = useNavigate();
   const initialized = useRef(false);
   const Getusername: string | null = new URLSearchParams(location.search).get(
@@ -16,6 +17,13 @@ function Dashboard() {
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
+
+      const verifyCookie = async () => {
+        if (!cookies.token) {
+          navigates("/login");
+        }
+      };
+
       async function fetchData() {
         try {
           const response = await fetch(
@@ -26,12 +34,11 @@ function Dashboard() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                username: "satrio",
-                password: "1234",
+                username: username,
+                password: password,
               }),
             }
           );
-
           if (response.ok) {
             const data = await response.json();
             setCookie("token", data.token);
@@ -42,20 +49,15 @@ function Dashboard() {
           console.error("Fetch error:", error);
         }
       }
-      fetchData();
 
-      const verifyCookie = async () => {
-        if (!cookies.token) {
-          navigates("/login");
-        }
-      };
+      fetchData();
       verifyCookie();
 
       if (Getusername) {
         notify_success(`Hello ${Getusername?.toUpperCase()} Welcome!`);
       }
     }
-  }, [cookies.token, navigates, Getusername]);
+  }, [cookies.token, navigates, username]);
 
   const handleLogout = () => {
     removeCookie("token");
