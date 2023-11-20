@@ -10,14 +10,13 @@ import {
   notify_failed,
   ToastContainer,
 } from "../components/toast-notify";
-//import { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 interface LoginPageProps {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
 }
-
 function LoginPage({ setUsername, setPassword }: LoginPageProps) {
-  //const [setCookie] = useCookies(["token"]);
+  const [, setCookie] = useCookies(["token"]);
   const location = useLocation();
   const registrationSuccess = new URLSearchParams(location.search).get(
     "registrationSuccess"
@@ -57,16 +56,10 @@ function LoginPage({ setUsername, setPassword }: LoginPageProps) {
       );
 
       if (response.ok) {
-        // const responseObject: { username: string } = await response.json();
-        // const username: string = responseObject?.username || "?";
-        //const token = (response.headers as Headers).get("Set-Cookie");
-        console.log(response.headers.get("Set-Cookie"));
-        // Assuming you have a function to handle storing the token
-        // For example, you could use a state management library or localStorage
-        // handleTokenStorage(token);
-
+        const responseObject: { token: string } = await response.json();
         // Redirect to the dashboard after successful login
         //navigates(`/dashboard?username=${username}`);
+        setCookie("token", responseObject.token);
         navigates(`/dashboard`);
       } else {
         const responseData = await response.json();
