@@ -8,12 +8,12 @@ interface DashboardProps {
   password: string;
 }
 
-function Dashboard({ username, password }: DashboardProps) {
+function Dashboard({ username }: DashboardProps) {
   const navigates = useNavigate();
   const initialized = useRef(false);
-  const Getusername: string | null = new URLSearchParams(location.search).get(
-    "username"
-  );
+  // const Getusername: string | null = new URLSearchParams(location.search).get(
+  //   "username"
+  // );
   //const [username, setUsername] = useState("");
   const [cookies, removeCookie] = useCookies(["token"]);
 
@@ -21,7 +21,7 @@ function Dashboard({ username, password }: DashboardProps) {
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      console.log(username, password);
+      //console.log(username, password);
       const verifyCookie = async () => {
         if (!cookies.token) {
           navigates("/login");
@@ -57,22 +57,22 @@ function Dashboard({ username, password }: DashboardProps) {
       // fetchData();
       verifyCookie();
 
-      if (Getusername) {
-        notify_success(`Hello ${Getusername?.toUpperCase()} Welcome!`);
+      if (username) {
+        notify_success(`Hello ${username?.toUpperCase()} Welcome!`);
       }
     }
-  }, [cookies.token, navigates, Getusername]);
+  }, [cookies.token, navigates, username]);
 
   const handleLogout = () => {
     removeCookie("token", { path: "/" });
     navigates("/");
   };
 
-  if (Getusername) {
+  if (username) {
     return (
       <>
         <div className="card">
-          <h1>Hello {Getusername?.toUpperCase()}</h1>
+          <h1>Hello {username?.toUpperCase()}</h1>
           <button onClick={handleLogout}>Logout</button>
           <p className="grey">Simple Web App Login by Satrio Drajat</p>
           <ToastContainer />
@@ -83,7 +83,7 @@ function Dashboard({ username, password }: DashboardProps) {
     return (
       <>
         <div className="card">
-          <h1>Hello {Getusername?.toUpperCase()}</h1>
+          <h1>Hello {username?.toUpperCase()}</h1>
           <button>Logout</button>
           <p className="grey">Simple Web App Login by Satrio Drajat</p>
         </div>
