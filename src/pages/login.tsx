@@ -10,8 +10,14 @@ import {
   notify_failed,
   ToastContainer,
 } from "../components/toast-notify";
-import { useAuth } from "../components/auth-contex";
-function LoginPage() {
+//import { useCookies } from "react-cookie";
+interface LoginPageProps {
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function LoginPage({ setUsername, setPassword }: LoginPageProps) {
+  //const [setCookie] = useCookies(["token"]);
   const location = useLocation();
   const registrationSuccess = new URLSearchParams(location.search).get(
     "registrationSuccess"
@@ -19,8 +25,6 @@ function LoginPage() {
   const initialized = useRef(false);
   const navigates = useNavigate();
   const { showPassword, handleTogglePassword } = useTogglePassword();
-
-  const { username, setUsername, password, setPassword } = useAuth();
 
   useEffect(() => {
     if (registrationSuccess === "true" && !initialized.current) {
@@ -43,24 +47,29 @@ function LoginPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Accept: "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            Connection: "keep-alive",
           },
           body: JSON.stringify({
-            username: username,
-            password: password,
+            username: e.currentTarget.username.value,
+            password: e.currentTarget.username.value,
           }),
+          credentials: "include",
         }
       );
 
       if (response.ok) {
-        //const responseObject: { username: string } = await response.json();
-        //const username: string = responseObject?.username || "?";
+        const responseObject: { username: string } = await response.json();
+        const username: string = responseObject?.username || "?";
+        //const token = (response.headers as Headers).get("Set-Cookie");
+        console.log(response.headers.get("Set-Cookie"));
         // Assuming you have a function to handle storing the token
         // For example, you could use a state management library or localStorage
         // handleTokenStorage(token);
 
         // Redirect to the dashboard after successful login
-        //navigates(`/dashboard?username=${username}`);
-        navigates(`/dashboard`);
+        navigates(`/dashboard?username=${username}`);
       } else {
         const responseData = await response.json();
         notify_failed(responseData.errMessage);

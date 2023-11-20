@@ -12,6 +12,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "proxy": "https://api-satrio-efb719eaf55c.herokuapp.com/",
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "react": "^18.2.0",

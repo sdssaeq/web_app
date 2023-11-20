@@ -2,9 +2,14 @@ import { useEffect, useRef } from "react";
 import { notify_success, ToastContainer } from "../components/toast-notify";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useAuth } from "../components/auth-contex";
+
+interface DashboardProps {
+  username: string;
+  password: string;
+}
+//{ username, password }: DashboardProps
+
 function Dashboard() {
-  const { username, password } = useAuth();
   const navigates = useNavigate();
   const initialized = useRef(false);
   const Getusername: string | null = new URLSearchParams(location.search).get(
@@ -24,40 +29,40 @@ function Dashboard() {
         }
       };
 
-      async function fetchData() {
-        try {
-          const response = await fetch(
-            "https://api-satrio-efb719eaf55c.herokuapp.com/login",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                username: username,
-                password: password,
-              }),
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setCookie("token", data.token);
-          } else {
-            console.error("Error:", response.status, response.statusText);
-          }
-        } catch (error) {
-          console.error("Fetch error:", error);
-        }
-      }
+      // async function fetchData() {
+      //   try {
+      //     const response = await fetch(
+      //       "https://api-satrio-efb719eaf55c.herokuapp.com/login",
+      //       {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //         body: JSON.stringify({
+      //           username: username,
+      //           password: password,
+      //         }),
+      //       }
+      //     );
+      //     if (response.ok) {
+      //       const data = await response.json();
+      //       setCookie("token", data.token);
+      //     } else {
+      //       console.error("Error:", response.status, response.statusText);
+      //     }
+      //   } catch (error) {
+      //     console.error("Fetch error:", error);
+      //   }
+      // }
 
-      fetchData();
+      // fetchData();
       verifyCookie();
 
       if (Getusername) {
         notify_success(`Hello ${Getusername?.toUpperCase()} Welcome!`);
       }
     }
-  }, [cookies.token, navigates, username]);
+  }, [cookies.token, navigates, Getusername]);
 
   const handleLogout = () => {
     removeCookie("token");
