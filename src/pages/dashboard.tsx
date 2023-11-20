@@ -7,22 +7,21 @@ interface DashboardProps {
   username: string;
   password: string;
 }
-//{ username, password }: DashboardProps
 
-function Dashboard() {
+function Dashboard({ username, password }: DashboardProps) {
   const navigates = useNavigate();
   const initialized = useRef(false);
   const Getusername: string | null = new URLSearchParams(location.search).get(
     "username"
   );
   //const [username, setUsername] = useState("");
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const [cookies, removeCookie] = useCookies(["token"]);
 
   //ERROR COOKIE NOT RECEIVE FROM BACKEND
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-
+      console.log(username, password);
       const verifyCookie = async () => {
         if (!cookies.token) {
           navigates("/login");
@@ -65,7 +64,7 @@ function Dashboard() {
   }, [cookies.token, navigates, Getusername]);
 
   const handleLogout = () => {
-    removeCookie("token");
+    removeCookie("token", { path: "/" });
     navigates("/");
   };
 
