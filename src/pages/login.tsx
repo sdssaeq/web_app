@@ -47,13 +47,10 @@ function LoginPage({ setUsername, setPassword }: LoginPageProps) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Accept: "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive",
           },
           body: JSON.stringify({
             username: e.currentTarget.username.value,
-            password: e.currentTarget.username.value,
+            password: e.currentTarget.password.value,
           }),
           credentials: "include",
         }
